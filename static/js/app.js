@@ -15,22 +15,18 @@ createPanelBody();
 dropdown.on("change", updatePlotly);
 
 dataFile.then(function (data) {
-    for (var i = 0; i < 9; i++){
-      if (data.samples[0].otu_ids[i] !== undefined) {
-        x.push(data.samples[0].otu_ids[i]);  
-        modX.push("OTU "+data.samples[0].otu_ids[i]);
-      }
-      if (data.samples[0].sample_values[i] !== undefined) {
-        y.push(data.samples[0].sample_values[i]);
-      }
-      if (data.samples[0].otu_labels[i] !== undefined) {
-        labels.push(data.samples[0].otu_labels[i]);
-      }
-    }
-    drawBubbleChart(x,y,labels);
+    x = data.samples[0].otu_ids.slice(0,10);
+    y = data.samples[0].sample_values.slice(0,10);
+    labels = data.samples[0].otu_labels.slice(0,10);
+    drawBubbleChart(x, y,labels);
     y.sort(function(a,b){ return (a-b)});
-    drawBarChart(y,modX,labels);
+    x.forEach(element => {
+      modX.push("OTU "+element);
+    });
     
+    drawBarChart(y,modX,labels);
+
+    drawPieChart(x,y,labels);
     
   data.names.forEach(elementt => {
     var opt = dropdown.append("option");
@@ -55,7 +51,6 @@ function updatePlotly() {
   createPanelBody();
 
   dataFile.then(function (data) {
-    try{
     data.metadata.every(elements => {
       if (elements.id == dataset) {
         updateDemographicInfo(elements);
@@ -64,31 +59,27 @@ function updatePlotly() {
       return true;
     });
     
+    
     data.samples.every(element => {
       if (element.id == dataset) {
-        for (var i = 0; i < 9; i++) {
-          if (element.otu_ids[i] !== undefined) {
-            x.push(element.otu_ids[i]);
-            modX.push("OTU "+element.otu_ids[i]);
-          }
-          if (element.sample_values[i] !== undefined) {
-            y.push(element.sample_values[i]);
-          }
-          if (element.otu_labels[i] !== undefined) {
-            labels.push(element.otu_labels[i]);
-          }
-        }
+        x = element.otu_ids.slice(0,10);
+        y = element.sample_values.slice(0,10);
+        labels = element.otu_labels.slice(0,10);
+        
+        drawBubbleChart(x, y,labels);
+        
+        y.sort(function(a,b){ return (a-b)});
+    
+        x.forEach(element => {
+          modX.push("OTU "+element);
+        });
+    
+        drawBarChart(y,modX,labels);
+        drawPieChart(x,y,labels);
         return false;
       }
       return true;
     });
-    drawBubbleChart(x, y,labels);
-    y.sort(function(a,b){ return (a-b)});
-    drawBarChart(y,modX,labels);
-    
-  } catch (e) {
-    if (e !== BreakException) throw e;
-  }
   });
 }
 
@@ -99,17 +90,17 @@ function createPanelBody() {
   panelBody.property('id', "sample-metadata");
 }
 function drawBarChart(xAxisData, yAxisData,labels) {
-  dataa = [{
-    y: yAxisData,
+  data_a = [{
     x: xAxisData,
+    y: yAxisData,
     text: labels,
     type: "bar",
     orientation: "h"
 }];
-Plotly.newPlot("bar", dataa);
+Plotly.newPlot("bar", data_a);
 }
 function drawBubbleChart(xAxisData, yAxisData,labels) {
-  dataa = [{
+  data_a = [{
     x: xAxisData,
     y: yAxisData,
     text: labels,
@@ -120,14 +111,30 @@ function drawBubbleChart(xAxisData, yAxisData,labels) {
       size: yAxisData,
     },
   }];
-  Plotly.newPlot("bubble", dataa);
+  Plotly.newPlot("bubble", data_a);
 }
-function drawGaugeChart(value){
+function drawPieChart(otuID_top10,sample_top10,otuDescription_top10){
+  /*define pie chart data*/
+  var piedata = [{
+    labels: otuID_top10,
+    values: sample_top10,
+    type: "pie",
+    hovertext:otuDescription_top10
+}];
+/*define pie chart layout*/
+var layout_pie = {
+  title: "<b>Top 10 Samples by OTU ID<br>(Pie Chart)</b>",
+  height: 500,
+  width: 500,
+};
+Plotly.newPlot("pie",piedata,layout_pie);
+}
+function drawGaugeChartA(value){
   var data = [
     {
       domain: { x: [0, 1], y: [0, 1] },
       value: value,
-      title: { text: "<b>Belly Button Washing Frequency</b><br>Scrubs per Week" },
+      title: { text: "<b>Belly Button Washing Frequency</b><br>Scrups per Week<br><b>(Digital Gauge)</b>" },
       textinfo: 'text',
       textposition: 'inside',
       type: "indicator",
@@ -136,9 +143,71 @@ function drawGaugeChart(value){
         axis: { range: [null, 9] },
       }
     }
-  ];
-  Plotly.newPlot('gauge', data);
+  ];  
+  Plotly.newPlot('gaugeA', data);
 }
+
+function drawGaugeChartB(wfreq){
+  /*define x and y position of pointer tip*/
+	var degrees = (9-wfreq)*20,
+  radius = .5;
+var radians = degrees * Math.PI / 180;
+var x = radius * Math.cos(radians);
+var y = radius * Math.sin(radians);
+
+/*create a triangle to represent a pointer*/
+var mainPath = 'M .0 -0.025 L .0 0.025 L ',
+  pathX = String(x),
+  space = ' ',
+  pathY = String(y),
+  pathEnd = ' Z';
+var path = mainPath.concat(pathX,space,pathY,pathEnd);
+/*define data for dot (scatter) and pie chart*/
+var data = [
+{ type: 'scatter',
+  x: [0,], y:[0],
+ marker: {size: 28, color:'850000'},
+ showlegend: false,
+ name: 'scrubs',
+ text: wfreq,
+ hoverinfo: 'text+name'},
+ 
+ { values: [50/9, 50/9, 50/9, 50/9, 50/9, 50/9,50/9,50/9,50/9, 50],
+ rotation: 90,
+ text: ['8-9', '7-8', '6-7','5-6', '4-5', '3-4', '2-3',
+         '1-2', '0-1', ''],
+ textinfo: 'text',
+ textposition:'inside',
+ marker: {colors:['rgba(30,120,30, .5)', 'rgba(55,135,55, .5)','rgba(80,150,80, .5)',
+         'rgba(105,165,105, .5)', 'rgba(130,180,130, .5)','rgba(155,195,155, .5)',
+          'rgba(180,210,180, .5)','rgba(205,225,205, .5)', 'rgba(230,240,230, .5)',
+                      'rgba(255, 255, 255, 0)']},
+ hoverinfo: 'none',
+ hole: .5,
+ type: 'pie',
+ showlegend: false}
+];
+/*define the layout, shape and path*/
+var layout = {
+   shapes:[{
+     type: 'path',
+     path: path,
+     fillcolor: '850000',
+     line: { color: '850000' }
+   }],
+   title: '<b>Belly Button Washing Frequency</b><br>Scrups per Week<br><b>(Analogue Gauge)</b>',
+   height: 600,
+   width: 600,
+   /*move the zero point to the middle of the pie chart*/
+   xaxis: {zeroline:false, showticklabels:false,
+          showgrid: false, range: [-1, 1]},
+   yaxis: {zeroline:false, showticklabels:false,
+          showgrid: false, range: [-1, 1]}
+ };
+
+Plotly.newPlot('gaugeB', data, layout);
+}
+
 function updateDemographicInfo(data) {
   panelBody.append("p").text(`ID: ${data.id}`);
   panelBody.append("p").text(`Ethnicity: ${data.ethnicity}`);
@@ -147,5 +216,6 @@ function updateDemographicInfo(data) {
   panelBody.append("p").text(`Location: ${data.location}`);
   panelBody.append("p").text(`bbtype: ${data.bbtype}`);
   panelBody.append("p").text(`wfreq: ${data.wfreq}`);
-  drawGaugeChart(data.wfreq);
+  drawGaugeChartA(data.wfreq);
+  drawGaugeChartB(data.wfreq);
 }

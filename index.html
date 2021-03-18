@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Bellybutton Biodiversity</title>
+  <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/cyborg/bootstrap.min.css">-->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
   <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -17,20 +18,20 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12 jumbotron text-center">
-        <h1 style="color:rgb(255, 94, 0)">Belly Button Biodiversity Dashboard</h1>
-        <p style="color:rgb(255, 38, 0)">Use the interactive charts below to explore the dataset</p>
+        <h1 style="color:rgb(60, 0, 128)">Belly Button Biodiversity<br>Dashboard</h1>
+        <p style="color:rgb(128, 0, 117)">Use the interactive charts below to explore the dataset</p>        
       </div>
     </div>
     <div class="row">
       <div class="col-md-2">
         <div class="well">
-          <h5><b>Test Subject ID No.:</b></h5>
+          <h5 style="color: black"><b>SELECT<BR>Test Subject<br>ID Number</b></h5>
           <select id="selDataset" onchange="optionChanged(this.value)">
           </select>
         </div>
         <div class="panel panel-primary" id="panel">
           <div class="panel-heading">
-            <h3 class="panel-title", style="color:rgb(229, 255, 0)">Demographic Info</h3>
+            <h3 class="panel-title", style="color: white">Demographic Info</h3>
           </div>
         </div>
       </div>
@@ -38,7 +39,15 @@
         <div id="bar"></div>
       </div>
       <div class="col-md-5">
-        <div id="gauge"></div>
+        <div id="gaugeA"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div id="pie"></div>
+      </div>
+      <div class="col-md-6">
+        <div id="gaugeB"></div>
       </div>
     </div>
     <div class="row">
