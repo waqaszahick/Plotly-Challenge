@@ -89,18 +89,18 @@ function createPanelBody() {
   panelBody.property('class', "panel-body");
   panelBody.property('id', "sample-metadata");
 }
-function drawBarChart(xAxisData, yAxisData,labels) {
-  dataa = [{
+function drawBarChart(xAxisData, yAxisData, labels) {
+  data_a = [{
     x: xAxisData,
     y: yAxisData,
     text: labels,
     type: "bar",
     orientation: "h"
 }];
-Plotly.newPlot("bar", dataa);
+Plotly.newPlot("bar", data_a);
 }
-function drawBubbleChart(xAxisData, yAxisData,labels) {
-  dataa = [{
+function drawBubbleChart(xAxisData, yAxisData, labels) {
+  data_a = [{    
     x: xAxisData,
     y: yAxisData,
     text: labels,
@@ -118,7 +118,7 @@ function drawBubbleChart(xAxisData, yAxisData,labels) {
       },
     }
   };
-  Plotly.newPlot("bubble", dataa,layout);
+  Plotly.newPlot("bubble", data_a);
 }
 function drawPieChart(otuID_top10,sample_top10,otuDescription_top10){
   /*define pie chart data*/
@@ -150,10 +150,7 @@ function drawGaugeChartA(value){
         axis: { range: [null, 9] },
       }
     }
-  ];
-  
-  // var layout = { width: 600, height: 450, margin: { t: 0, b: 0 } };
-  // Plotly.newPlot('myDiv', data, layout);
+  ];  
   Plotly.newPlot('gaugeA', data);
 }
 
