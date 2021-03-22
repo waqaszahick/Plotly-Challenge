@@ -90,17 +90,17 @@ function createPanelBody() {
   panelBody.property('id', "sample-metadata");
 }
 function drawBarChart(xAxisData, yAxisData,labels) {
-  dataa = [{
+  data_a = [{
     x: xAxisData,
     y: yAxisData,
     text: labels,
     type: "bar",
     orientation: "h"
 }];
-Plotly.newPlot("bar", dataa);
+Plotly.newPlot("bar", data_a);
 }
 function drawBubbleChart(xAxisData, yAxisData,labels) {
-  dataa = [{
+  data_a = [{
     x: xAxisData,
     y: yAxisData,
     text: labels,
@@ -118,7 +118,7 @@ function drawBubbleChart(xAxisData, yAxisData,labels) {
       },
     }
   };
-  Plotly.newPlot("bubble", dataa,layout);
+  Plotly.newPlot("bubble", data_a,layout);
 }
 function drawPieChart(otuID_top10,sample_top10,otuDescription_top10){
   /*define pie chart data*/
